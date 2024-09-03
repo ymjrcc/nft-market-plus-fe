@@ -14,6 +14,9 @@ dependencies:
   '@tanstack/react-query':
     specifier: ^5.51.11
     version: 5.53.3(react@18.3.1)
+  clsx:
+    specifier: ^2.1.1
+    version: 2.1.1
   framer-motion:
     specifier: ^11.3.31
     version: 11.3.31(react-dom@18.3.1)(react@18.3.1)
@@ -3896,7 +3899,7 @@ packages:
       '@react-aria/utils': 3.24.1(react@18.3.1)
       '@react-types/shared': 3.23.1(react@18.3.1)
       '@swc/helpers': 0.5.5
-      clsx: 2.1.0
+      clsx: 2.1.1
       react: 18.3.1
     dev: false
 
@@ -3909,7 +3912,7 @@ packages:
       '@react-aria/utils': 3.25.2(react@18.3.1)
       '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
-      clsx: 2.1.0
+      clsx: 2.1.1
       react: 18.3.1
     dev: false
 
@@ -4448,7 +4451,7 @@ packages:
       '@react-stately/utils': 3.10.1(react@18.3.1)
       '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
-      clsx: 2.1.0
+      clsx: 2.1.1
       react: 18.3.1
     dev: false
 
@@ -4461,7 +4464,7 @@ packages:
       '@react-stately/utils': 3.10.3(react@18.3.1)
       '@react-types/shared': 3.24.1(react@18.3.1)
       '@swc/helpers': 0.5.5
-      clsx: 2.1.0
+      clsx: 2.1.1
       react: 18.3.1
     dev: false
 
@@ -6830,6 +6833,11 @@ packages:
 
   /clsx@2.1.0:
     resolution: {integrity: sha512-m3iNNWpd9rl3jvvcBnu70ylMdrXt8Vlq4HYadnU5fwcOtvkSQWPmj7amUcDT2qYI7risszBjI5AUIUox9D16pg==}
+    engines: {node: '>=6'}
+    dev: false
+
+  /clsx@2.1.1:
+    resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
     engines: {node: '>=6'}
     dev: false
 
