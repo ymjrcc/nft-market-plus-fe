@@ -10,14 +10,15 @@ import {
 
 export const config = getDefaultConfig({
   appName: 'RainbowKit demo',
-  projectId: 'YOUR_PROJECT_ID',
+  projectId: '48d2dc02a08917fabc83d6e7175b9442',
   chains: [
     mainnet,
     polygon,
     optimism,
     arbitrum,
     base,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [sepolia] : []),
+    // ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [sepolia] : []),
+    sepolia,
   ],
   ssr: true,
 });
