@@ -19,8 +19,8 @@ function Header() {
       <div className='flex items-center'>
         <Link href='/' className="flex items-center h-10 mr-8 border-2 border-gray-600 rounded-lg px-2 bg-gradient-to-r from-gray-900 to-gray-700">
           <PackagePlus className='text-gray-400 mr-2' size={24} />
-          <span className="text-2xl font-bold text-gray-200 mr-1">NFT Market</span>
-          <span className="text-2xl font-bold text-gray-400">Plus</span>
+          <span className="text-xl font-bold text-gray-200 mr-1">NFT Market</span>
+          <span className="text-xl font-bold text-gray-400">Plus</span>
         </Link>
         <ul className='flex'>
           {
