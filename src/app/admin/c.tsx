@@ -7,6 +7,7 @@ import toast from 'react-hot-toast'
 import ForbiddenState from '@/components/ForbiddenState'
 import SectionTitle from '@/components/SectionTitle'
 import YMToken from '@/abi/YMToken.json'
+import YMNFT from '@/abi/YMNFT.json'
 
 const Page = () => {
 
@@ -37,18 +38,18 @@ const Page = () => {
 
   const onMintNft = async () => {
     setMintNftLoading(true)
-    // const hash = await writeContractAsync({
-    //   address: "0xD6058907806a611cD9f4F3E565C3AED4633d6431",
-    //   abi: YMToken.abi,
-    //   functionName: "mintNFT",
-    //   args: [
-    //     mintNftTo,
-    //     uri
-    //   ]
-    // })
-    // toast('Mint successful! The transaction hash is ' + hash.slice(-10))
-    // console.log(hash)
-    // setMintNftLoading(false)
+    const hash = await writeContractAsync({
+      address: "0xdaAc9cf602eAC9E79A5afFe800ae5412FfAbbC42",
+      abi: YMNFT.abi,
+      functionName: "safeMint",
+      args: [
+        mintNftTo,
+        uri
+      ]
+    })
+    toast('Mint successful! The transaction hash is ' + hash.slice(-10))
+    console.log(hash)
+    setMintNftLoading(false)
   }
 
 
