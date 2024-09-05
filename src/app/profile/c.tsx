@@ -5,7 +5,7 @@ import { useReadContract, useWriteContract, useAccount } from 'wagmi'
 import { Input, Spinner } from '@nextui-org/react'
 import { BadgeDollarSign } from 'lucide-react'
 import SectionTitle from '@/components/SectionTitle'
-import EmptyState from '@/components/EmptyState'
+import NftList from './ntfList'
 import YMToken from '@/abi/YMToken.json'
 
 const Page = () => {
@@ -36,7 +36,7 @@ const Page = () => {
     </div>
 
     <SectionTitle title='My YMNFT' />
-    <EmptyState />
+    <NftList />
   </>
 }
 

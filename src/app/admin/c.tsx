@@ -32,14 +32,15 @@ const Page = () => {
       ]
     })
     toast('Mint successful! The transaction hash is ' + hash.slice(-10))
-    console.log(hash)
+    setMintTo('')
+    setMintAmount('')
     setMintLoading(false)
   }
 
   const onMintNft = async () => {
     setMintNftLoading(true)
     const hash = await writeContractAsync({
-      address: "0xdaAc9cf602eAC9E79A5afFe800ae5412FfAbbC42",
+      address: "0x03511900fE6ad41fd221b6a5a75694578a4d92F7",
       abi: YMNFT.abi,
       functionName: "safeMint",
       args: [
@@ -48,7 +49,8 @@ const Page = () => {
       ]
     })
     toast('Mint successful! The transaction hash is ' + hash.slice(-10))
-    console.log(hash)
+    setMintNftTo('')
+    setUri('')
     setMintNftLoading(false)
   }
 
