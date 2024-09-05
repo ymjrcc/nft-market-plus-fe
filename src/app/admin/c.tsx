@@ -6,24 +6,23 @@ import {Input, Button} from "@nextui-org/react"
 import toast from 'react-hot-toast'
 import ForbiddenState from '@/components/ForbiddenState'
 import SectionTitle from '@/components/SectionTitle'
-import YMToken from '@/abi/YMToken.json'
-import YMNFT from '@/abi/YMNFT.json'
+import { YMToken, YMNFT } from '@/utils/contracts'
 
 const Page = () => {
 
   const { address } = useAccount()
   const [mintLoading, setMintLoading] = useState(false)
   const [mintNftLoading, setMintNftLoading] = useState(false)
-  const [mintTo, setMintTo] = useState('')
+  const [mintTo, setMintTo] = useState<any>('')
   const [mintAmount, setMintAmount] = useState('')
-  const [mintNftTo, setMintNftTo] = useState('')
+  const [mintNftTo, setMintNftTo] = useState<any>('')
   const [uri, setUri] = useState('')
   const { writeContractAsync } = useWriteContract()
 
   const onMint = async () => {
     setMintLoading(true)
     const hash = await writeContractAsync({
-      address: "0xD6058907806a611cD9f4F3E565C3AED4633d6431",
+      address: YMToken.address,
       abi: YMToken.abi,
       functionName: "mint",
       args: [
@@ -40,7 +39,7 @@ const Page = () => {
   const onMintNft = async () => {
     setMintNftLoading(true)
     const hash = await writeContractAsync({
-      address: "0x03511900fE6ad41fd221b6a5a75694578a4d92F7",
+      address: YMNFT.address,
       abi: YMNFT.abi,
       functionName: "safeMint",
       args: [

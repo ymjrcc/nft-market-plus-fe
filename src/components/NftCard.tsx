@@ -1,8 +1,8 @@
 import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Checkbox, Input, Link } from "@nextui-org/react"
 import { useState } from "react"
 import toast from "react-hot-toast"
-import { parseAbi } from 'viem'
 import { useReadContract, useWriteContract, useAccount } from 'wagmi'
+import { YMNFT, market } from "@/utils/contracts"
 
 type TData = {
   title: string
@@ -13,17 +13,6 @@ type TData = {
   tokenId: bigint
   owner?: string
   price?: bigint
-}
-
-const YMNFT = {
-  address: '0x03511900fE6ad41fd221b6a5a75694578a4d92F7' as `0x${string}`,
-}
-
-const market = {
-  address: '0x5Dfe4Aeb99e265D3B5A91Cf135FD6623193D942a' as `0x${string}`,
-  abi: parseAbi([
-    'function list(address _nftAddr, uint256 _tokenId, uint256 _price) external'
-  ])
 }
 
 const formatAddress = (address: string) => {

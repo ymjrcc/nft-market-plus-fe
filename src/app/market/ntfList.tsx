@@ -3,32 +3,17 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useReadContract, useReadContracts, useWriteContract, useAccount } from 'wagmi'
 import { Spinner } from '@nextui-org/react'
-import { parseAbi } from 'viem'
 import EmptyState from '@/components/EmptyState'
 import NftCard from '@/components/NftCard'
-
-const YMNFT = {
-  address: '0x03511900fE6ad41fd221b6a5a75694578a4d92F7' as `0x${string}`,
-  abi: parseAbi([
-    'function balanceOf(address _owner) external view returns (uint256)',
-    'function tokenOfOwnerByIndex(address owner, uint256 index) external view returns (uint256)',
-    'function tokenURI(uint256 _tokenId) external view returns (string memory)'
-  ])
-}
-
-const market = {
-  address: '0x5Dfe4Aeb99e265D3B5A91Cf135FD6623193D942a' as `0x${string}`,
-  abi: parseAbi([
-    'function nftList(address nftAddress, uint256 tokenId) external view returns (address owner, uint256 price)'
-  ])
-}
+import { timeoutPromise } from '@/utils/timeoutPromise'
+import { YMNFT, market } from '@/utils/contracts'
 
 const NftList = () => {
 
   const [list, setList] = useState<any[]>([])
   const { address }: any = useAccount()
   const { data: balance, error, isLoading, refetch } = useReadContract({
-    address: '0x03511900fE6ad41fd221b6a5a75694578a4d92F7',
+    address: YMNFT.address,
     abi: YMNFT.abi,
     functionName: 'balanceOf',
     args: [market.address],
@@ -77,7 +62,9 @@ const NftList = () => {
 
   const fetchList = async () => {
     if(!tokenUris) return
-    const res = await Promise.all(tokenUris.map((i: any) => fetchData(i.result.replace('ipfs://', ''))))
+    const res = await Promise.all(
+      tokenUris.map((i: any) => timeoutPromise(fetchData(i.result.replace('ipfs://', ''))))
+    )
     setList(res)
   }
 

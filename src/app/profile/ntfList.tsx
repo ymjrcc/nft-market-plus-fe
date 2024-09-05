@@ -3,25 +3,18 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useReadContract, useReadContracts, useWriteContract, useAccount } from 'wagmi'
 import { Spinner } from '@nextui-org/react'
-import { parseAbi } from 'viem'
 import EmptyState from '@/components/EmptyState'
 import NftCard from '@/components/NftCard'
-
-
-const abi = parseAbi([
-  'function balanceOf(address _owner) external view returns (uint256)',
-  'function tokenOfOwnerByIndex(address owner, uint256 index) external view returns (uint256)',
-  'function tokenURI(uint256 _tokenId) external view returns (string memory)'
-])
-const contractAddress = '0x03511900fE6ad41fd221b6a5a75694578a4d92F7' as `0x${string}`
+import { timeoutPromise } from '@/utils/timeoutPromise'
+import { YMNFT } from "@/utils/contracts"
 
 const NftList = () => {
 
   const [list, setList] = useState<any[]>([])
   const { address }: any = useAccount()
   const { data: balance, error, isLoading, refetch } = useReadContract({
-    address: '0x03511900fE6ad41fd221b6a5a75694578a4d92F7',
-    abi,
+    address: YMNFT.address,
+    abi: YMNFT.abi,
     functionName: 'balanceOf',
     args: [address],
   })
@@ -36,8 +29,8 @@ const NftList = () => {
 
   const { data: tokenIds } = useReadContracts({
     contracts: balanceArray.map((i) => ({
-      address: contractAddress,
-      abi,
+      address: YMNFT.address,
+      abi: YMNFT.abi,
       functionName: 'tokenOfOwnerByIndex',
       args: [address, BigInt(i)],
     }))
@@ -45,8 +38,8 @@ const NftList = () => {
 
   const { data: tokenUris } = useReadContracts({
     contracts: tokenIds?.map((i) => ({
-      address: contractAddress,
-      abi,
+      address: YMNFT.address,
+      abi: YMNFT.abi,
       functionName: 'tokenURI',
       args: [i?.result],
     }))
@@ -60,7 +53,9 @@ const NftList = () => {
 
   const fetchList = async () => {
     if(!tokenUris) return
-    const res = await Promise.all(tokenUris.map((i: any) => fetchData(i.result.replace('ipfs://', ''))))
+    const res = await Promise.all(
+      tokenUris.map((i: any) => timeoutPromise(fetchData(i.result.replace('ipfs://', ''))))
+    )
     setList(res)
   }
 
