@@ -31,7 +31,7 @@ const Page = () => {
         BigInt(mintAmount) * BigInt(10**18)
       ]
     })
-    toast('Mint successful! The transaction hash is ' + hash.slice(-10))
+    toast.success('Mint successful! The transaction hash is ' + hash.slice(-10))
     setMintTo('')
     setMintAmount('')
     setMintLoading(false)
@@ -48,7 +48,7 @@ const Page = () => {
         uri
       ]
     })
-    toast('Mint successful! The transaction hash is ' + hash.slice(-10))
+    toast.success('Mint successful! The transaction hash is ' + hash.slice(-10))
     setMintNftTo('')
     setUri('')
     setMintNftLoading(false)
