@@ -1,15 +1,8 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Button } from '@nextui-org/button'; 
+import type { Metadata } from 'next'
+import C from './market/c';
 
-function Page() {
-  return (
-    <>
-      <h1 className="text-3xl font-bold underline text-blue-600 text-center p-8">
-        Hello Tailwindcss!
-      </h1>
-      <Button>Click me</Button>
-    </>
-  );
+export const metadata: Metadata = {
+  title: 'Market | NFT Market Plus',
 }
 
-export default Page;
+export default C;

@@ -11,6 +11,8 @@ type TData = {
   attributes?: any[];
   status: string
   tokenId: bigint
+  owner?: string
+  price?: bigint
 }
 
 const YMNFT = {
@@ -22,6 +24,10 @@ const market = {
   abi: parseAbi([
     'function list(address _nftAddr, uint256 _tokenId, uint256 _price) external'
   ])
+}
+
+const formatAddress = (address: string) => {
+  return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
 const NftCard = (data: TData) => {
@@ -75,16 +81,35 @@ const NftCard = (data: TData) => {
             </div>
           ) : null
         }
+        {
+          data.status === 'listing' && data.owner && data.price ?
+            <div className="pt-2 mt-4 border-t-2 border-gray-700 text-gray-400">
+              <div>Owner: {formatAddress(data.owner)}</div>
+              <div>Price: {Number(data.price / BigInt(10 ** 18))} YMT</div>
+            </div> : null
+        }
       </div>
       <div className="absolute bottom-0 w-full p-2">
         {
           data.status === 'unlisted' ?
             <Button
               className="w-full bg-blue-500 text-white text-base" size="sm"
-              // onClick={() => onList(data.tokenId)}
               onClick={onOpen}
               isLoading={isPending}
             >List</Button>
+            : null
+        }
+        {
+          data.status === 'listing' ?
+            (
+              data.owner === address ?
+                <Button
+                  className="w-full bg-gray-500 text-white text-base" size="sm"
+                >Cancel List</Button> :
+                <Button
+                  className="w-full bg-orange-500 text-white text-base" size="sm"
+                >Buy</Button>
+            )
             : null
         }
 
