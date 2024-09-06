@@ -13,6 +13,7 @@ const Page = () => {
 
   const { address }: any = useAccount()
   const { writeContractAsync, isPending } = useWriteContract()
+  const [activeBtn, setActiveBtn] = useState('token')
 
   const { data: balance, error, isLoading, refetch } = useReadContract({
     address: YMToken.address,
@@ -26,6 +27,7 @@ const Page = () => {
   }, [balance])
 
   const onApproveNft = async () => {
+    setActiveBtn('nft')
     const hash = await writeContractAsync({
       address: YMNFT.address,
       abi: YMNFT.abi,
@@ -35,10 +37,29 @@ const Page = () => {
     toast.success('Approval successful! The transaction hash is ' + hash.slice(-10))
   }
 
+  const onApproveToken = async () => {
+    setActiveBtn('token')
+    if(!balance) {
+      toast.error('You have no YMToken to approve!')
+      return
+    }
+    const hash = await writeContractAsync({
+      address: YMToken.address,
+      abi: YMToken.abi,
+      functionName: 'approve',
+      args: [market.address, balance],
+    })
+    toast.success('Approval successful! The transaction hash is ' + hash.slice(-10))
+  }
+
   return <>
     <div className='flex justify-between'>
       <SectionTitle title='My YMToken' />
-      <Button color="primary" variant="bordered">Approve To Market</Button>
+      <Button 
+        color="primary" variant="bordered"
+        isLoading={isPending && activeBtn === 'token'}
+        onClick={onApproveToken}
+      >Approve To Market</Button>
     </div>
     <div className='w-60 mb-10 mt-4'>
       {
@@ -55,7 +76,7 @@ const Page = () => {
       <SectionTitle title='My YMNFT' />
       <Button 
         color="primary" variant="bordered" 
-        isLoading={isPending}
+        isLoading={isPending && activeBtn === 'nft'}
         onClick={onApproveNft}
       >Approve To Market</Button>
     </div>

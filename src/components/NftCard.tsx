@@ -49,6 +49,44 @@ const NftCard = (data: TData) => {
     onClose()
   }
 
+  const onCancelList = async () => {
+    const hash = await writeContractAsync({
+      address: market.address,
+      abi: market.abi,
+      functionName: 'cancel',
+      args: [YMNFT.address, data.tokenId]
+    },
+      {
+        onError: (error) => {
+          toast.error(error.message, {
+            style: {
+              wordBreak: 'break-all'
+            }
+          })
+        }
+      })
+    toast.success('Cancel list successful! The transaction hash is ' + hash.slice(-10))
+  }
+
+  const onBuy = async () => {
+    const hash = await writeContractAsync({
+      address: market.address,
+      abi: market.abi,
+      functionName: 'buy',
+      args: [YMNFT.address, data.tokenId]
+    },
+      {
+        onError: (error) => {
+          toast.error(error.message, {
+            style: {
+              wordBreak: 'break-all'
+            }
+          })
+        }
+      })
+    toast.success('Buy successful! The transaction hash is ' + hash.slice(-10))
+  }
+
   return (
     <div className="w-80 rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white m-2 pb-10 relative">
       <img className="w-full h-60 object-cover" src={data.image} alt={data.title} />
@@ -94,10 +132,14 @@ const NftCard = (data: TData) => {
               data.owner === address ?
                 <Button
                   className="w-full bg-gray-500 text-white text-base" size="sm"
-                >Cancel List</Button> :
+                  onClick={onCancelList}
+                  isLoading={isPending}
+              >Cancel List</Button> :
                 <Button
                   className="w-full bg-orange-500 text-white text-base" size="sm"
-                >Buy</Button>
+                  onClick={onBuy}
+                  isLoading={isPending}
+                  >Buy</Button>
             )
             : null
         }
