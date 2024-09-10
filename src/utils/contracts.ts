@@ -4,7 +4,7 @@ export const YMToken = {
   address: '0xD6058907806a611cD9f4F3E565C3AED4633d6431' as `0x${string}`,
   abi: parseAbi([
     'function balanceOf(address _owner) external view returns (uint256)',
-    'function mint(address _to, uint256 _value) external returns (bool)',
+    'function mint(address _to, uint256 _value) external',
     'function approve(address _spender, uint256 _value) external returns (bool)',
   ])
 }

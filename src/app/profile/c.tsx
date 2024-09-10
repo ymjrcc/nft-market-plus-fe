@@ -23,7 +23,13 @@ const Page = () => {
   })
 
   const formatBalance = useMemo(() => {
-    return balance ? (Number(balance) / (10 ** 18)).toString() : '0'
+    let formatBalance = balance ? (Number(balance) / (10 ** 18)).toString() : '0'
+    if(Math.abs(Math.round(Number(formatBalance)) - Number(formatBalance)) < 0.000001) {
+      formatBalance = Math.round(Number(formatBalance)).toString()
+    } else {
+      formatBalance = Number(formatBalance).toFixed(6)
+    }
+    return formatBalance
   }, [balance])
 
   const onApproveNft = async () => {

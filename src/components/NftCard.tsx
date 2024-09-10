@@ -1,7 +1,7 @@
 import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Checkbox, Input, Link } from "@nextui-org/react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
-import { useReadContract, useWriteContract, useAccount } from 'wagmi'
+import { useReadContract, useWriteContract, useAccount, useSendTransaction, useWaitForTransactionReceipt } from 'wagmi'
 import { YMNFT, market } from "@/utils/contracts"
 
 type TData = {
@@ -23,9 +23,20 @@ const NftCard = (data: TData) => {
 
   const { address }: any = useAccount()
   const [price, setPrice] = useState<string>('')
-  const { writeContractAsync, isPending } = useWriteContract()
+  const { data: hash, writeContractAsync, isPending } = useWriteContract()
 
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
+  const { 
+      isLoading: isConfirming, 
+      isSuccess: isConfirmed 
+  } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    console.log('hash', hash);
+    console.log('isConfirming', isConfirming);
+    console.log('isConfirmed', isConfirmed);
+  }, [isConfirming, isConfirmed, hash])
 
   const onList = async () => {
     const amount = BigInt(Number(price) * 10 ** 18)

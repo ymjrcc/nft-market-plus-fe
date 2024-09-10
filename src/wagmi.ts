@@ -1,4 +1,5 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
+import { http } from 'wagmi';
 import {
   arbitrum,
   base,
@@ -20,5 +21,9 @@ export const config = getDefaultConfig({
     // ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [sepolia] : []),
     sepolia,
   ],
+  transports: {
+    [mainnet.id]: http('https://mainnet.infura.io/v3/32076fdc1eec4d01975b561943bd7e8d'),
+    [sepolia.id]: http('https://sepolia.infura.io/v3/32076fdc1eec4d01975b561943bd7e8d'),
+  },
   ssr: true,
 });
