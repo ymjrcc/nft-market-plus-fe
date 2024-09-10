@@ -6,7 +6,7 @@ import {Input, Button} from "@nextui-org/react"
 import toast from 'react-hot-toast'
 import ForbiddenState from '@/components/ForbiddenState'
 import SectionTitle from '@/components/SectionTitle'
-import { YMToken, YMNFT } from '@/utils/contracts'
+import { YMToken, YMNFT, ADMIN } from '@/utils/contracts'
 
 const Page = () => {
 
@@ -54,7 +54,7 @@ const Page = () => {
   }
 
 
-  if(address !== '0xFA8Bac84bb8594B7Fc7ACAF932cA680D9A6E495E') return <ForbiddenState />
+  if(address !== ADMIN) return <ForbiddenState />
   return (
     <>
       <SectionTitle title="Mint YMT" subtitle='Mint any number of YMToken for the specified address'/>

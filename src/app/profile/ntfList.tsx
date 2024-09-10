@@ -68,7 +68,7 @@ const NftList = () => {
   return (
     <div className="flex flex-wrap -m-2 mt-2">
       {list.map((i: any, index) => (
-        <NftCard status='unlisted' tokenId={tokenIds?.[index].result} {...i} key={index} />
+        <NftCard status='unlisted' tokenId={tokenIds?.[index]?.result} {...i} key={index} />
       ))}
     </div>
   )

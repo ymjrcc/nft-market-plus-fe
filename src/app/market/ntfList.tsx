@@ -83,7 +83,7 @@ const NftList = () => {
       {list.map((i: any, index) => (
         <NftCard 
         status='listing' 
-        tokenId={tokenIds?.[index].result}
+        tokenId={tokenIds?.[index]?.result}
         owner={orders?.[index]?.result?.[0]}
         price={orders?.[index]?.result?.[1]}
         {...i} key={index} 

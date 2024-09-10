@@ -1,8 +1,9 @@
 import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Checkbox, Input, Link } from "@nextui-org/react"
 import { useEffect, useState } from "react"
+import { parseSignature } from 'viem'
 import toast from "react-hot-toast"
-import { useReadContract, useWriteContract, useAccount, useSendTransaction, useWaitForTransactionReceipt } from 'wagmi'
-import { YMNFT, market } from "@/utils/contracts"
+import { useReadContract, useWriteContract, useAccount, useSendTransaction, useWaitForTransactionReceipt, useChainId, useSignTypedData } from 'wagmi'
+import { YMNFT, market, YMToken } from "@/utils/contracts"
 
 type TData = {
   title: string
@@ -22,6 +23,8 @@ const formatAddress = (address: string) => {
 const NftCard = (data: TData) => {
 
   const { address }: any = useAccount()
+  const chainId = useChainId()
+  const { signTypedDataAsync } = useSignTypedData();
   const [price, setPrice] = useState<string>('')
   const { data: hash, writeContractAsync, isPending } = useWriteContract()
 
@@ -31,6 +34,13 @@ const NftCard = (data: TData) => {
       isLoading: isConfirming, 
       isSuccess: isConfirmed 
   } = useWaitForTransactionReceipt({ hash });
+
+  const { data: nonce, refetch: refetchNonce } = useReadContract({
+    address: YMToken.address,
+    abi: YMToken.abi,
+    functionName: 'nonces',
+    args: [address],
+  })
 
   useEffect(() => {
     console.log('hash', hash);
@@ -98,6 +108,70 @@ const NftCard = (data: TData) => {
     toast.success('Buy successful! The transaction hash is ' + hash.slice(-10))
   }
 
+  const sign = async () => {
+    await refetchNonce()
+    const domain = {
+      name: 'YMToken',
+      version: '1',
+      chainId: chainId,
+      verifyingContract: YMToken.address
+    }
+
+    const types = {
+      Permit: [
+        { name: 'owner', type: 'address' },
+        { name: 'spender', type: 'address' },
+        { name: 'value', type: 'uint256' },
+        { name: 'nonce', type: 'uint256' },
+        { name: 'deadline', type: 'uint256' }
+      ]
+    }
+
+    const value = data.price
+    const deadline = BigInt(Math.floor(Date.now() / 1000) + 60 * 20)
+
+    const message = {
+      owner: address,
+      spender: market.address,
+      value: value,
+      nonce: nonce,
+      deadline: deadline
+    }
+    const s = await signTypedDataAsync({
+      primaryType: 'Permit',
+      domain,
+      types, 
+      message
+    })
+    const signatureData = parseSignature(s)
+    return {
+      ...signatureData,
+      deadline
+    }
+  }
+
+  const onPermitBuy = async () => {
+    const result: any = await sign()
+    const hash = await writeContractAsync({
+      address: market.address,
+      abi: market.abi,
+      functionName: 'permitBuy',
+      args: [
+        YMNFT.address, data.tokenId, result.deadline, result.v, result.r, result.s
+      ]
+    },
+      {
+        onError: (error) => {
+          toast.error(error.message, {
+            style: {
+              wordBreak: 'break-all'
+            }
+          })
+        }
+      })
+    toast.success('Buy successful! The transaction hash is ' + hash.slice(-10))
+  }
+
   return (
     <div className="w-80 rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white m-2 pb-10 relative">
       <img className="w-full h-60 object-cover" src={data.image} alt={data.title} />
@@ -148,7 +222,8 @@ const NftCard = (data: TData) => {
               >Cancel List</Button> :
                 <Button
                   className="w-full bg-orange-500 text-white text-base" size="sm"
-                  onClick={onBuy}
+                  // onClick={onBuy}
+                  onClick={onPermitBuy}
                   isLoading={isPending}
                   >Buy</Button>
             )
