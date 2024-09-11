@@ -42,11 +42,11 @@ const NftCard = (data: TData) => {
     args: [address],
   })
 
-  useEffect(() => {
-    console.log('hash', hash);
-    console.log('isConfirming', isConfirming);
-    console.log('isConfirmed', isConfirmed);
-  }, [isConfirming, isConfirmed, hash])
+  // useEffect(() => {
+  //   console.log('hash', hash);
+  //   console.log('isConfirming', isConfirming);
+  //   console.log('isConfirmed', isConfirmed);
+  // }, [isConfirming, isConfirmed, hash])
 
   const onList = async () => {
     const amount = BigInt(Number(price) * 10 ** 18)

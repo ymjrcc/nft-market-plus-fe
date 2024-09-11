@@ -1,7 +1,7 @@
 import { parseAbi } from "viem";
 
 export const YMToken = {
-  address: '0x5FbDB2315678afecb367f032d93F642f64180aa3' as `0x${string}`, // localhost
+  address: '0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f' as `0x${string}`, // localhost
   // address: '0xD6058907806a611cD9f4F3E565C3AED4633d6431' as `0x${string}`, // sepolia
   abi: parseAbi([
     'function balanceOf(address _owner) external view returns (uint256)',
