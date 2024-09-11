@@ -26,7 +26,7 @@ const Page = () => {
   const { 
     isLoading: isConfirming, 
     isSuccess: isConfirmed 
-} = useWaitForTransactionReceipt({ hash });
+  } = useWaitForTransactionReceipt({ hash });
 
   const formatBalance = useMemo(() => {
     let formatBalance = balance ? (Number(balance) / (10 ** 18)).toString() : '0'
@@ -39,9 +39,7 @@ const Page = () => {
   }, [balance])
 
   useEffect(() => {
-    if(isConfirmed) {
-      refetchBalance()
-    }
+    isConfirmed && refetchBalance()
   }, [isConfirmed])
 
   const onApproveNft = async () => {
@@ -110,11 +108,11 @@ const Page = () => {
 
     <div className='flex justify-between'>
       <SectionTitle title='My YMNFT' />
-      <Button 
+      {/* <Button 
         color="primary" variant="bordered" 
         isLoading={isPending && activeBtn === 'nft'}
         onClick={onApproveNft}
-      >Approve To Market</Button>
+      >Approve To Market</Button> */}
     </div>
     <NftList />
   </>

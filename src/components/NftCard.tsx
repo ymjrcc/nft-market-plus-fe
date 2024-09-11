@@ -30,9 +30,9 @@ const NftCard = (data: TData) => {
 
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
-  const { 
-      isLoading: isConfirming, 
-      isSuccess: isConfirmed 
+  const {
+    isLoading: isConfirming,
+    isSuccess: isConfirmed
   } = useWaitForTransactionReceipt({ hash });
 
   const { data: nonce, refetch: refetchNonce } = useReadContract({
@@ -42,11 +42,70 @@ const NftCard = (data: TData) => {
     args: [address],
   })
 
-  // useEffect(() => {
-  //   console.log('hash', hash);
-  //   console.log('isConfirming', isConfirming);
-  //   console.log('isConfirmed', isConfirmed);
-  // }, [isConfirming, isConfirmed, hash])
+  useEffect(() => {
+    isConfirmed && refetchNonce()
+  }, [isConfirmed])
+
+  const signToList = async () => {
+    const domain = {
+      name: 'YMNFT',
+      version: '1',
+      chainId: chainId,
+      verifyingContract: YMNFT.address
+    }
+
+    const types = {
+      Permit: [
+        { name: 'to', type: 'address' },
+        { name: 'tokenId', type: 'uint256' },
+        { name: 'deadline', type: 'uint256' }
+      ]
+    }
+
+    const deadline = BigInt(Math.floor(Date.now() / 1000) + 60 * 20)
+
+    const message = {
+      to: market.address,
+      tokenId: data.tokenId,
+      deadline
+    }
+
+    const signHash = await signTypedDataAsync({
+      primaryType: 'Permit',
+      domain,
+      types,
+      message
+    })
+
+    return {
+      signHash,
+      deadline
+    }
+
+  }
+
+  const onPermitList = async () => {
+    const result: any = await signToList()
+    const amount = BigInt(Number(price) * 10 ** 18)
+    const hash = await writeContractAsync({
+      address: market.address,
+      abi: market.abi,
+      functionName: 'listWithSignature',
+      args: [YMNFT.address, data.tokenId, amount, result.deadline, result.signHash]
+    },
+      {
+        onError: (error) => {
+          toast.error(error.message, {
+            style: {
+              wordBreak: 'break-all'
+            }
+          })
+        }
+      })
+    toast.success('List successful! The transaction hash is ' + hash.slice(-10))
+    setPrice('')
+    onClose()
+  }
 
   const onList = async () => {
     const amount = BigInt(Number(price) * 10 ** 18)
@@ -108,7 +167,7 @@ const NftCard = (data: TData) => {
     toast.success('Buy successful! The transaction hash is ' + hash.slice(-10))
   }
 
-  const sign = async () => {
+  const signToBuy = async () => {
     await refetchNonce()
     const domain = {
       name: 'YMToken',
@@ -137,13 +196,13 @@ const NftCard = (data: TData) => {
       nonce: nonce,
       deadline: deadline
     }
-    const s = await signTypedDataAsync({
+    const signHash = await signTypedDataAsync({
       primaryType: 'Permit',
       domain,
-      types, 
+      types,
       message
     })
-    const signatureData = parseSignature(s)
+    const signatureData = parseSignature(signHash)
     return {
       ...signatureData,
       deadline
@@ -151,7 +210,7 @@ const NftCard = (data: TData) => {
   }
 
   const onPermitBuy = async () => {
-    const result: any = await sign()
+    const result: any = await signToBuy()
     const hash = await writeContractAsync({
       address: market.address,
       abi: market.abi,
@@ -161,6 +220,9 @@ const NftCard = (data: TData) => {
       ]
     },
       {
+        onSuccess: () => {
+          refetchNonce()
+        },
         onError: (error) => {
           toast.error(error.message, {
             style: {
@@ -219,13 +281,13 @@ const NftCard = (data: TData) => {
                   className="w-full bg-gray-500 text-white text-base" size="sm"
                   onClick={onCancelList}
                   isLoading={isPending}
-              >Cancel List</Button> :
+                >Cancel List</Button> :
                 <Button
                   className="w-full bg-orange-500 text-white text-base" size="sm"
                   // onClick={onBuy}
                   onClick={onPermitBuy}
                   isLoading={isPending}
-                  >Buy</Button>
+                >Buy</Button>
             )
             : null
         }
@@ -249,7 +311,10 @@ const NftCard = (data: TData) => {
                 <Button color="danger" variant="light" onPress={onClose}>
                   Close
                 </Button>
-                <Button color="primary" onPress={onList} isLoading={isPending}>
+                {/* <Button color="primary" onPress={onList} isLoading={isPending}>
+                  Submit
+                </Button> */}
+                <Button color="primary" onPress={onPermitList} isLoading={isPending}>
                   Submit
                 </Button>
               </ModalFooter>
