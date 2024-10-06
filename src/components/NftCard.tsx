@@ -236,7 +236,11 @@ const NftCard = (data: TData) => {
 
   return (
     <div className="w-80 rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white m-2 pb-10 relative">
-      <img className="w-full h-60 object-cover" src={data.image} alt={data.title} />
+      <img 
+      className="w-full h-60 object-cover" 
+        src={data.image.includes('ipfs://') ? `https://gateway.pinata.cloud/ipfs/${data.image.replace('ipfs://', '')}` : data.image}
+        alt={data.title} 
+      />
       <div className="px-3 py-2">
         <div className="font-bold text-xl mb-2">{data.title}</div>
         <div className="mb-2 border border-gray-200 rounded inline-block px-2 bg-gray-700">#{Number(data.tokenId)}</div>
