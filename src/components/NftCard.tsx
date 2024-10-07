@@ -237,7 +237,7 @@ const NftCard = (data: TData) => {
   return (
     <div className="w-80 rounded-lg overflow-hidden shadow-lg bg-gray-800 text-white m-2 pb-10 relative">
       <img 
-      className="w-full h-60 object-cover" 
+        className="w-full h-60 object-cover" 
         src={data.image.includes('ipfs://') ? `https://gateway.pinata.cloud/ipfs/${data.image.replace('ipfs://', '')}` : data.image}
         alt={data.title} 
       />
@@ -291,6 +291,7 @@ const NftCard = (data: TData) => {
                   // onClick={onBuy}
                   onClick={onPermitBuy}
                   isLoading={isPending}
+                  isDisabled={!address}
                 >Buy</Button>
             )
             : null
